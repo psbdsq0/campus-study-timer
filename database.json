@@ -1,0 +1,36 @@
+{
+    "study_records": {
+        "user": {
+            "totalSeconds": 0,
+            "today": "2026. 10. 29.",
+            "goalSeconds": 10800,
+            "theme": "light",
+            "nickname": "박석빈",
+            "yesterdayRank": null
+        }
+    },
+    "board_posts": [
+        {
+            "id": 1793557870326,
+            "author": "박석빈",
+            "content": "공부할떄는 폰을 집에 두고 오는게 나은 거 같아요!",
+            "comments": [
+                {
+                    "author": "박석빈",
+                    "text": "진짜로요!!"
+                }
+            ]
+        },
+        {
+            "author": "공부벌레",
+            "comments": [
+                {
+                    "author": "A+ 과탑",
+                    "text": "오 저도 해봐야겠어요"
+                }
+            ],
+            "content": "뽀모도로 50분 집중이 저한테는 딱 맞네요!",
+            "id": 1
+        }
+    ]
+}

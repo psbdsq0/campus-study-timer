@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>캠퍼스 스터디 타이머 (Campus Study Timer)</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+</head>
+<body class="light-mode">
+    <!-- 닉네임 설정 모달 -->
+    <div id="nicknameModal" class="modal">
+        <div class="modal-content card">
+            <h2>사용할 닉네임을 정해주세요</h2>
+            <p>다른 학우들과 경쟁할 멋진 이름을 입력하세요.</p>
+            <input type="text" id="nicknameInput" placeholder="닉네임 입력 (최대 8자)" maxlength="8">
+            <p id="nicknameError" class="error-text" style="display: none;">이미 사용 중인 닉네임입니다.</p>
+            <button id="saveNicknameBtn" class="primary">시작하기</button>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <header>
+            <h1>🎓 Campus Study Timer</h1>
+            <div class="theme-toggle">
+                <button id="themeBtn" title="테마 변경">🌙</button>
+            </div>
+        </header>
+
+        <main>
+            <section class="timer-section card">
+                <div class="timer-settings">
+                    <label for="workDuration">집중 시간(분): </label>
+                    <input type="number" id="workDuration" value="25" min="1" max="1440">
+                </div>
+                <div class="timer-display">
+                    <span id="minutes">25</span>:<span id="seconds">00</span>
+                </div>
+                <div class="timer-status" id="timerStatus">집중 시간</div>
+                <div class="timer-controls">
+                    <button id="startBtn" class="primary">시작</button>
+                    <button id="pauseBtn" class="secondary" disabled>일시정지</button>
+                    <button id="resetBtn" class="outline">리셋</button>
+                </div>
+            </section>
+
+            <section class="stats-section card">
+                <h3>오늘의 집중 기록</h3>
+                <div class="total-time-container">
+                    <span class="label">총 공부 시간:</span>
+                    <span id="totalStudyTime" class="value">00:00:00</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar-bg">
+                        <div id="goalProgress" class="progress-bar-fill" style="width: 0%;"></div>
+                    </div>
+                    <p class="progress-text">일일 목표 달성률: <span id="progressPercent">0</span>%</p>
+                </div>
+            </section>
+
+            <section class="ranking-section card">
+                <h3>🔥 실시간 랭킹 (Campus)</h3>
+                <ul class="ranking-list" id="rankingList">
+                </ul>
+                <div id="yesterdayRankContainer" class="yesterday-rank" style="display: none;">
+                    <hr>
+                    <p>📅 어제 나의 순위: <span id="yesterdayMyRank">-</span>위</p>
+                </div>
+            </section>
+
+            <!-- 게시판 섹션 -->
+            <section class="board-section card">
+                <h3>📚 공부 꿀팁 나눔판</h3>
+                <div class="post-form">
+                    <input type="text" id="postInput" placeholder="공부 꿀팁을 공유해보세요!">
+                    <button id="addPostBtn" class="primary">등록</button>
+                </div>
+                <div id="postList" class="post-list">
+                    <!-- 게시글이 여기에 표시됨 -->
+                </div>
+            </section>
+
+            <!-- 챗봇 섹션 -->
+            <section class="chatbot-section card">
+                <h3>🤖 Campus Cody (학습 도우미)</h3>
+                <div id="chatHistory" class="chat-history">
+                    <div class="message bot">안녕하세요! 공부나 타이머에 대해 궁금한 점이 있으면 물어보세요.</div>
+                </div>
+                <div id="chatError" class="chat-error" style="display: none;"></div>
+                <div class="chat-input-container">
+                    <div id="chatLoading" class="chat-loading" style="display: none;">
+                        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                        <span id="chatLoadingText" style="margin-left: 8px; font-size: 0.85rem; opacity: 0.8;">답변 생성 중... (0초)</span>
+                    </div>
+                    <input type="text" id="chatInput" placeholder="질문을 입력하세요...">
+                    <button id="sendChatBtn" class="primary">전송</button>
+                </div>
+                <div class="api-key-config-container" style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--secondary-color);">
+                    <div style="font-size: 0.85rem; margin-bottom: 4px; color: var(--text-color); font-weight: 600;">🔑 Gemini API 키 설정</div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="password" id="apiKeyInput" placeholder="API 키를 입력하세요..." style="flex: 1; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--secondary-color); background-color: var(--card-bg); color: var(--text-color); font-size: 0.85rem;">
+                        <button id="saveApiKeyBtn" class="secondary" style="padding: 0.5rem 0.75rem; font-size: 0.85rem; white-space: nowrap;">키 저장 & 확인</button>
+                    </div>
+                    <div id="apiKeyStatus" style="font-size: 0.8rem; margin-top: 6px; display: none;"></div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 psbdsq0 Campus Study Timer. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- 인라인 폴백 스크립트: file:/// 및 모든 환경에서 닉네임 모달이 무조건 닫히도록 보장 -->
+    <script>
+        (function() {
+            const closeModal = function() {
+                const modal = document.getElementById('nicknameModal');
+                const input = document.getElementById('nicknameInput');
+                if (modal) {
+                    modal.style.setProperty('display', 'none', 'important');
+                }
+                if (input && input.value.trim()) {
+                    try {
+                        const saved = localStorage.getItem('campus_study_timer_data');
+                        let data = saved ? JSON.parse(saved) : {};
+                        data.nickname = input.value.trim();
+                        localStorage.setItem('campus_study_timer_data', JSON.stringify(data));
+                    } catch(e) {}
+                }
+            };
+            document.addEventListener('DOMContentLoaded', () => {
+                const btn = document.getElementById('saveNicknameBtn');
+                const input = document.getElementById('nicknameInput');
+                if (btn) {
+                    btn.addEventListener('click', closeModal);
+                }
+                if (input) {
+                    input.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') closeModal();
+                    });
+                }
+            });
+        })();
+    </script>
+
+    <!-- 앱 메인 스크립트 (type="module" 제거하여 file:// CORS 차단 방지) -->
+    <script src="js/app.js"></script>
+</body>
+</html>
